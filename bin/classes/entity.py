@@ -11,6 +11,7 @@ class Entity:
 	description = None
 	createdAt = None
 	updatedAt = None
+	customProperties = {}
 
 	# Actions
 	def __init__(self, name):
@@ -26,8 +27,16 @@ class Entity:
 		self.description = description
 		self.save()
 
+	def setCustomProperty(self, key, value):
+		self.customProperties[key] = value;
+
+	def getCustomProperty(self, key):
+		if (key in self.customProperties)
+			return self.customProperties[key]
+		return false
+
 	def create(self):
-		pass
+		raise NotImplementedError(type(self).__name__ + ' is required to implement create!')
 
 	def save(self):
 		self.updatedAt = datetime.datetime.now()
@@ -35,7 +44,7 @@ class Entity:
 		self.generateYAML()
 
 	def generateYAML(self):
-		raise NotImplementedError(type(self).__name__ + ' is required to implement genYAML!')
+		raise NotImplementedError(type(self).__name__ + ' is required to implement generateYAML!')
 
 	def loadYAML(self):
 		raise NotImplementedError(type(self).__name__ + ' is required to implement loadYAML!')
@@ -44,7 +53,7 @@ class Entity:
 		raise NotImplementedError(type(self).__name__ + ' is required to implement deleteYAML!')
 
 	def print(self):
-		print(self.name)
+		print("The Entity, " + self.name)
 		print("----------------------------");
 		print(self.description)
 		print("")
