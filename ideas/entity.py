@@ -97,7 +97,23 @@ class Entity:
 		self.updatedAt = datetime.datetime.strptime(entity['updatedAt'], "%Y-%m-%d %H:%M:%S.%f")
 
 
-	@staticmethod
+	def toString(self):
+		""" Generate and return a string representation of the entity"""
+		s = ("# " + self.name + "\n"
+			 "\n## Description\n"
+			 "" + self.description + "\n"
+			 "\n## Timestamps\n"
+			 "Created at " + self.createdAt.strftime("%Y-%m-%d %H:%M") + "\n"
+			 "Updated at " + self.updatedAt.strftime("%Y-%m-%d %H:%M")
+			)
+
+		return s
+
+	def dump(self):
+		"""Dump to debug info to console"""
+		print("Key:  %s\nSpec: %s\nPath: %s" % (self.key, self.spec.name, self.path))
+
+	
 	def getSpec(self):
 		return self.spec
 

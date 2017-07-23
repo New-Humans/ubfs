@@ -1,0 +1,6 @@
+createdAt: '2017-07-22 22:00:55.173125'
+description: Existence. Inescapable. Once plucked from thought it is sacramented in document.
+key: existence
+name: Default Existence
+spec: !!python/object/apply:ideas.spec.Spec [5]
+updatedAt: '2017-07-22 22:00:55.173125'

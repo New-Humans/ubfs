@@ -1,20 +1,20 @@
 from .entity import Entity
 from .context import Context
 from .spec import Spec
-from .galaxy import Galaxy
+# from .system import System
 
-class Universe(Entity, Context):
+class Galaxy(Entity, Context):
 	"""Context based entity"""
 
 	# Universes must have
-	spec = Spec.UNIVERSE
-	allowedChildEntities = [Spec.GALAXY]
+	spec = Spec.GALAXY
+	allowedChildEntities = [Spec.SYSTEM]
 
 	# Universes should handle the following methods a little differently
 	def initEntityFromSpec(self, spec, key, path):
 		"""Retrieve a new entity of a given child class, based on the spec. Not sure if this method belongs in this class"""
-		if (spec == Spec.GALAXY):
-			return Galaxy(key, path)
+		if (spec == Spec.SYSTEM):
+			pass #return Galaxy(key, path)
 
 		raise FileNotFoundError("Entity '" + spec.name + "' cannot be found!")
 
