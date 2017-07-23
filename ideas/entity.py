@@ -97,6 +97,53 @@ class Entity:
 		self.updatedAt = datetime.datetime.strptime(entity['updatedAt'], "%Y-%m-%d %H:%M:%S.%f")
 
 
+	def update(self):
+		"""Assumes entity is loaded. Displays menu for updating properties of the entity. After
+		   editing is complete the YAML file is deleted, and generated"""
+		print("# Editing entity '%s'" % self.name)
+		choice = None
+		while (choice != '3'):
+			choice = None 	
+			while (choice != '1' and choice != '2' and choice != '3'):
+				print("## Please select an action")
+				print("  1) Edit name")
+				print("  2) Edit description")
+				print("  3) Save and exit")
+				choice = self.askFor("Action")
+
+				if (choice != '1' and choice != '2' and choice != '3'):
+					print("Invalid choice!")
+
+			if (choice == '1'):
+				name = self.askFor("Please enter a name for this entity")
+				self.name = name
+			elif (choice == '2'):
+				description = self.askFor("Please enter a description for this entity")
+				self.description = description
+			elif (choice == '3'):
+				print("Saving entity...")
+				self.updatedAt = datetime.datetime.now()
+				self.refreshYAML()
+				print("Saved!")
+
+
+	def deleteYAML(self):
+		"""Assumes YAML file for the entity does exist. Deletes the YAML file for the entity"""
+		# Check the directory and file exist
+		fullEntityPath = self.path + '/' + self.YAMLFileName
+		if (not os.path.exists(fullEntityPath)):
+			raise FileNotFoundError("The " + self.spec.name + " could not be found!")
+
+		# The deleting!
+		os.remove(fullEntityPath)
+
+
+	def refreshYAML(self):
+		"""Assumes YAML file exists. Deletes and creates the file"""
+		self.deleteYAML()
+		self.createYAML()
+
+
 	def toString(self):
 		""" Generate and return a string representation of the entity"""
 		s = ("# " + self.name + "\n"

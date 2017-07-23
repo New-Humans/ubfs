@@ -15,6 +15,9 @@ def show(entity):
 def dump(entity):
 	entity.dump()
 
+def update(entity):
+	entity.update()
+
 
 
 # Main loop definition
@@ -85,7 +88,7 @@ def mainLoop(config, cs):
 				print("That entity can't be created from this frame of reference!")
 
 	# DUMP
-	elif(args[0] == "dump"):
+	elif (args[0] == "dump"):
 		if (len(args) < 2):
 			dump(frameOfReference)
 		else:
@@ -96,6 +99,17 @@ def mainLoop(config, cs):
 			except FileNotFoundError:
 				print("There's no entity in this context with that key!")
 
+	# UPDATE
+	elif (args[0] == "update"):
+		if (len(args) < 2):
+			update(frameOfReference)
+		else:
+			try:
+				entity = frameOfReference.find(args[1])
+				update(entity)
+				entity = None
+			except FileNotFoundError:
+				print("There's no entity in this context with that key!")
 
 	# UNRECOGNIZED
 	else:
