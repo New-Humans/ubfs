@@ -127,6 +127,11 @@ class Entity:
 				print("Saved!")
 
 
+	def delete(self):
+		"""Remove this entity... intentionally vague"""
+		self.deleteYAML()
+
+
 	def deleteYAML(self):
 		"""Assumes YAML file for the entity does exist. Deletes the YAML file for the entity"""
 		# Check the directory and file exist

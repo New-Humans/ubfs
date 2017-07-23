@@ -18,6 +18,9 @@ def dump(entity):
 def update(entity):
 	entity.update()
 
+def delete(entity):
+	entity.delete()
+
 
 
 # Main loop definition
@@ -110,6 +113,34 @@ def mainLoop(config, cs):
 				entity = None
 			except FileNotFoundError:
 				print("There's no entity in this context with that key!")
+
+
+	# DELETE
+	elif (args[0] == "delete"):
+		if (len(args) < 2):
+			if (len(cs) < 1):
+				print("You can't delete existence! (sorry)")
+			else:
+				choice = askForString("Really delete this " + frameOfReference.getSpec().name +"? [y/n]")
+
+				if (choice == 'y'):
+					delete(frameOfReference)
+					frameOfReference = cs.pop()
+				else:
+					print("Aborting operation")
+		else:
+			try:
+				entity = frameOfReference.find(args[1])
+				choice = askForString("Really delete this " + entity.getSpec().name +"? [y/n]")
+
+				if (choice == 'y'):
+					delete(entity)
+				else:
+					print("Aborting operation")
+			except FileNotFoundError:
+				print("There's no entity in this context with that key!")
+
+
 
 	# UNRECOGNIZED
 	else:
