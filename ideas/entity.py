@@ -9,7 +9,6 @@ class Entity:
 	"""Encompessing parent class for most other people, places, and things"""
 
 	# An entity must have...
-
 	# Saveable / editable (stored on saves and updates)
 	key = None
 	spec = Spec.ENTITY            # This is a reference to different types of entities
@@ -23,6 +22,8 @@ class Entity:
 	YAMLFileName = "entity.yaml"
 	promptPrefix = "> "
 	promptSuffix = ": "
+
+
 
 	# An entity must be able to...
 	def __init__(self, key, path):
@@ -65,13 +66,40 @@ class Entity:
 		yaml.dump(entity, stream)
 		stream.close()
 
-		@staticmethod
-		def getSpec(self):
-			return self.spec
+
+	def load(self):
+		"""Load implies we're loading an existing entity."""
+		# Check the directory and file exist
+		if (not os.path.exists(self.path + '/' + self.YAMLFileName)):
+			raise FileNotFoundError("The " + self.spec.name + " could not be found!")
+
+		# Load the YAML!
+		self.loadYAML()
 
 
+	def loadYAML(self):
+		"""Assumes YAML file for the entity does exist. Loads the YAML into the object"""
+		# Check the directory and file exist
+		fullEntityPath = self.path + '/' + self.YAMLFileName
+		if (not os.path.exists(fullEntityPath)):
+			raise FileNotFoundError("The " + self.spec.name + " could not be found!")
+
+		# The loading!
+		stream = open(fullEntityPath, 'r')
+		entity = yaml.load(stream)
+		stream.close()
+
+		# The referencing!
+		self.spec = entity['spec']
+		self.name = entity['name']
+		self.description = entity['description']
+		self.createdAt = datetime.datetime.strptime(entity['createdAt'], "%Y-%m-%d %H:%M:%S.%f")
+		self.updatedAt = datetime.datetime.strptime(entity['updatedAt'], "%Y-%m-%d %H:%M:%S.%f")
 
 
+	@staticmethod
+	def getSpec(self):
+		return self.spec
 
 
 	# Helpers mainly
