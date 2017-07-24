@@ -1,15 +1,7 @@
-Hello! Welcome to the universe builder file system.
+Welcome to UBFS (Universe Builder File System)
 
-This folder depends on a contextual heirarchy. All things in creation are defined relative to their context. As such, representing the context between entities is very important. This is what the UBFS tries to address - contextual heirarchy between entities.
+Requires python 3. Run ubfs.py and use 'help' to get started.
 
-Each directory will contain the an "entity_meta.yaml". It contains information specific to the entity.
+Based on a tree of contexts. Each context is an entity, but not all entities are contexts. The context tree can be traversed using a stack of contexts.
 
-Directories within the entitity are considered to be context-specific entities within the current entity.
-
-Different entities have different properties. Custom properties can be added to any entity.
-
-You can use the ubfs.py script to interact with your project. It just reads the file system and handles directory/file creation and deletion.
-
-ubfs_generate_html.py will generate a visualization of the project.
-
-ubfs_browse.py will allow you to browse your universe via text.
+New entities should be added to the ideas/ directory.
