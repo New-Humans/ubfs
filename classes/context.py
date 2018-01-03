@@ -1,4 +1,9 @@
+import os
+import yaml
+import datetime
 from .entity import Entity
+from .entity import EntityNotFoundError
+from .entity import EntityAlreadyExistsError
 from .spec import Spec
 
 class Context(Entity):
@@ -18,10 +23,10 @@ class Context(Entity):
 
 	# Things that child classes SHOULDNT need to redeclare
 	isContext = True
-	childDirectory = "entities"
+	childDirectory = "e"
 
 	# Things that every child class will want to redeclare
-	spec = Spec.Context
+	spec = Spec.CONTEXT
 	allowedChildEntities = []
 
 	# ---- Methods ---- #
@@ -36,7 +41,20 @@ class Context(Entity):
 
 		Return
 		Entity"""
-		pass
+		
+		# Check if the queried entity exists
+		entityPath = self.getPath() + '/' + self.getChildDirectory() + '/'
+		if (not os.path.exists(entityPath + key)):
+			raise EntityNotFoundError("Cannot locate entity with key '" + key + "' in " + self.getSpecString())
+
+		# Load it into correct entity
+		entity = Entity(key, entityPath)
+		entity.load()
+		correctSpec = entity.getSpec()
+		entity = self.initEntityFromSpec(correctSpec, key, entityPath)
+		entity.load()
+
+		return entity
 
 	def add(self, key, spec):
 		"""Attempt to add given spec-type entity, with key, to this context.
@@ -49,7 +67,37 @@ class Context(Entity):
 
 		Return
 		None"""
-		pass
+		
+		# Make sure the entity doesn't already exist
+		entityPath = self.getPath() + '/' + self.getChildDirectory() + '/'
+		if (os.path.exists(entityPath + key)):
+			raise EntityAlreadyExistsError("Can't add entity with key '" + key + "' to " + self.getSpecString())
+
+		# Check allowed specs
+		if (spec not in self.allowedChildEntities):
+			raise ContextEntityConflictError("Can't add entity with key '" + key + "', type '" + spec.name + "' to " + self.getSpecString())
+
+		# Create the new entity
+		entity = self.initEntityFromSpec(spec, key, entityPath)
+		entity.create()
+
+	def toString(self):
+		"""Represent the entity attributes as a string.
+
+		Will redefine on many entities
+
+		Arguments
+		None
+
+		Return
+		string"""
+		s = "The %s '%s':\n\n" % (self.getSpecString(), self.getName())
+		s += "%s\n\n" % (self.getDescription())
+		s += "Within this %s lies:\n" % (self.getSpecString())
+		for entity in self.getContextualChildren():
+			s += "  * [%s] The %s '%s'\n" % (entity.getKey(), entity.getSpecString(), entity.getName())
+
+		return s
 
 	# Private
 	def initEntityFromSpec(self, spec, key, path):
@@ -64,11 +112,24 @@ class Context(Entity):
 
 		Return
 		Entity"""
-		pass
+		raise ContextEntityConflictError("Can't find entity with spec '" + spec.name + "' in this " + self.getSpecString())
 
 	def getContextualChildren(self):
 		"""Return list of entities, representing contextual children. Do not redefine."""
-		pass
+		childEntities = []
+		for dirpaths, dirnames, filenames in os.walk(self.path + '/' + self.childDirectory):
+			for key in dirnames:
+				try:
+					entity = Entity(key, self.path + '/' + self.childDirectory + '/')
+					entity.load()
+					correctSpec = entity.getSpec()
+					entity = self.initEntityFromSpec(correctSpec, key, self.path + '/' + self.childDirectory + '/')
+					entity.load()
+					childEntities.append(entity)
+				except EntityNotFoundError:
+					pass # Skip entities which no longer exist...
+
+		return childEntities
 
 	def createDirectories(self):
 		"""Create directories needed for this context. Called in create.
@@ -80,4 +141,21 @@ class Context(Entity):
 
 		Return
 		None"""
-		pass
+		os.makedirs(self.getPath())
+		os.makedirs(self.getPath() + '/' + self.getChildDirectory())
+
+	# Getters and setters...
+	def getChildDirectory(self):
+		"""Return context child directory string"""
+		return self.childDirectory
+
+	def setChildDirectory(self, dir):
+		"""Set context child directory string"""
+		self.childDirectory = dir
+
+# Contexts can throw a number of exceptions
+# For when adding entities that aren't allowed to contexts
+class ContextEntityConflictError(Exception):
+	pass
+
+

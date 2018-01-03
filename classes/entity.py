@@ -1,6 +1,8 @@
 import datetime
 import os
+import yaml
 from .spec import Spec
+
 
 class Entity:
 	"""Anything that ever physically existed can be considered an entity.
@@ -43,7 +45,7 @@ class Entity:
 	isPerson = False
 	isPlace = False
 	isThing = False
-	prompPrefix = "> "
+	promptPrefix = "> "
 	promptSuffix = ": "
 
 	# Things every child class will want to redeclare
@@ -62,8 +64,8 @@ class Entity:
 
 		Return
 		None"""
-		self.key = key
-		self.path = path + key
+		self.setKey(key)
+		self.setPath(path + key)
 
 
 	# Public methods
@@ -81,12 +83,12 @@ class Entity:
 		None"""
 
 		# Error check to see if it already exists
-		if (os.path.exists(self.path)):
+		if (os.path.exists(self.getPath())):
 			raise EntityAlreadyExistsError("Cannot create " + self.getSpecString() + " with key '" + self.getKey() + "'. Key already exists")
 
 		# Tick the timestamps checkbox
-		self.createdAt = datetime.datetime.now()
-		self.updatedAt = datetime.datetime.now()
+		self.setCreatedAt(datetime.datetime.now())
+		self.setUpdatedAt(datetime.datetime.now())
 
 		# Create the entity's directory environment
 		self.createDirectories()
@@ -111,7 +113,7 @@ class Entity:
 		None"""
 
 		# Make sure the entity exists
-		if (not os.path.exists(self.path + '/' + self.YAMLFileName)):
+		if (not os.path.exists(self.getPath() + '/' + self.getYAMLFileName())):
 			raise EntityNotFoundError("Cannot load " + self.getSpecString() + " with key '" + self.getKey() + "'. Key not found")
 
 		# Load the YAML file into memory
@@ -132,7 +134,7 @@ class Entity:
 		None"""
 
 		# Make sure the entity exists
-		if (not os.path.exists(self.path + '/' + self.YAMLFileName)):
+		if (not os.path.exists(self.getPath() + '/' + self.getYAMLFileName())):
 			raise EntityNotFoundError("Cannot delete " + self.getSpecString() + " with key '" + self.getKey() + "'. Key not found")
 
 		# End it all
@@ -148,12 +150,12 @@ class Entity:
 
 		Return
 		None"""
-		print("# Editing entity '%s'" % self.getName())
+		print("Editing %s '%s'" % (self.getSpecString(), self.getName()))
 		choice = None
 		while (choice != 3):
 			choice = None 	
 			while (choice != 1 and choice != 2 and choice != 3):
-				print("## Please select an action")
+				print("Please select an action")
 				print("  1) Edit name")
 				print("  2) Edit description")
 				print("  3) Save and exit")
@@ -163,12 +165,12 @@ class Entity:
 					print("Invalid choice!")
 
 			if (choice == 1):
-				self.setName(self.askForString("Please enter a name for this entity"))
+				self.setName(self.askForString("Please enter a name for this %s" % self.getSpecString()))
 			elif (choice == 2):
-				self.setDescription(self.askForString("Please enter a description for this entity"))
+				self.setDescription(self.askForString("Please enter a description for this %s" % self.getSpecString()))
 			elif (choice == 3):
-				print("Saving entity...")
-				self.updatedAt = datetime.datetime.now()
+				print("Saving %s..." % self.getSpecString())
+				self.setUpdatedAt(datetime.datetime.now())
 				self.refreshYAML()
 				print("Saved!")
 
@@ -177,19 +179,19 @@ class Entity:
 		print("Key:  %s\nSpec: %s\nPath: %s" % (self.getKey(), self.getSpecString(), self.getPath()))
 
 
-	def isContext(self):
+	def getIsContext(self):
 		"""Return isContext attribute"""
 		return self.isContext
 
-	def isPerson(self):
+	def getIsPerson(self):
 		"""Return isPerson attribute"""
 		return self.isPerson
 
-	def isPlace(self):
+	def getIsPlace(self):
 		"""Return isPlace attribute"""
 		return self.isPlace
 
-	def isThing(self):
+	def getIsThing(self):
 		"""Return isThing attribute"""
 		return self.isThing
 
@@ -205,7 +207,7 @@ class Entity:
 
 		Return
 		None"""
-		os.makedirs(self.path)
+		os.makedirs(self.getPath())
 
 	def createYAML(self):
 		"""Create the YAML file for this entity. Can't exist already.
@@ -244,7 +246,7 @@ class Entity:
 		if (not os.path.exists(fullYAMLPath)):
 			raise EntityAlreadyExistsError("Cannot load YAML for" + self.getSpecString() + " with key '" + self.getKey() + "'. YAML not found")
 
-		stream = open(fullEntityPath, 'r')
+		stream = open(fullYAMLPath, 'r')
 		entityDictionary = yaml.load(stream)    # Load the serialized YAML into a dictionary using yaml package
 		stream.close()
 		self.fromYAML(entityDictionary)         # Load the dictionary into memory
@@ -256,6 +258,8 @@ class Entity:
 		fullYAMLPath = self.getPath() + '/' + self.getYAMLFileName()
 		if (not os.path.exists(fullYAMLPath)):
 			raise EntityNotFoundError("Cannot delete YAML for " + self.getSpecString() + " with key '" + self.getKey() + "'. YAML not found")
+
+		os.remove(fullYAMLPath)
 
 	def refreshYAML(self):
 		"""Update the YAML file with what's in the entity memory. Do not redefine"""
@@ -272,11 +276,8 @@ class Entity:
 
 		Return
 		string"""
-		s = "%s\n".format(self.getName())
-		s += "---------------------\n"
-		s += "Spec: %s\n\n".format(self.getSpecString())
-		s += "%s\n\n".format(self.getDescription())
-		s += "Created %s, last updated %s".format(self.getCreatedAtSring(), self.getUpdatedAtString())
+		s = "The %s '%s':\n\n" % (self.getSpecString(), self.getName())
+		s += "%s\n\n" % (self.getDescription())
 		return s
 
 	def toYAML(self):
@@ -308,11 +309,11 @@ class Entity:
 
 		Return
 		None"""
-		self.setSpec(entity['spec'])
-		self.setName(entity['name'])
-		self.setDescription(entity['description'])
-		self.setCreatedAt(datetime.datetime.strptime(entity['createdAt'], "%Y-%m-%d %H:%M:%S.%f"))
-		self.setUpdatedAt(datetime.datetime.strptime(entity['updatedAt'], "%Y-%m-%d %H:%M:%S.%f"))
+		self.setSpec(entityDict['spec'])
+		self.setName(entityDict['name'])
+		self.setDescription(entityDict['description'])
+		self.setCreatedAt(datetime.datetime.strptime(entityDict['createdAt'], "%Y-%m-%d %H:%M:%S.%f"))
+		self.setUpdatedAt(datetime.datetime.strptime(entityDict['updatedAt'], "%Y-%m-%d %H:%M:%S.%f"))
 
 	def askForString(self, prompt):
 		"""Gaurantee a string response to a prompt. Uses prefix and suffix attributes.
@@ -336,7 +337,12 @@ class Entity:
 
 		Return
 		string"""
-		return input(self.promptPrefix + prompt + self.promptSuffix)
+		return int(input(self.promptPrefix + prompt + self.promptSuffix))
+
+	def askForDocument(self, prompt):
+		doc = input(self.promptPrefix + prompt + self.promptSuffix)
+		doc = doc.replace("<br>", "\n")
+		return doc
 
 	# Getters and setters... Bottom of the barrel
 	def getKey(self):
