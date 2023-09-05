@@ -96,9 +96,12 @@ class Context(Entity):
 		s += "Contains:\n"
 		if (not self.getContextualChildren()):
 			s += " * There is nothing here...."
+		# todo, get longest character length for: spec name, name, key, then use those as padding +1
 		for entity in self.getContextualChildren():
-			s += (" * "+Colors.OKBLUE+"<%s>"+Colors.ENDC+Colors.OKCYAN+" %s"+Colors.ENDC+Colors.OKGREEN+" (%s)"+Colors.ENDC+"\n") % (entity.getSpecString().upper(), entity.getName(), entity.getKey())
-
+			s += (" * "+Colors.OKBLUE+Spec.padString("<"+entity.getSpecString().upper()+">", 15)+Colors.ENDC)
+			s += (Colors.OKCYAN+Spec.padString(entity.getName(), 20)+Colors.ENDC)
+			s += (Colors.OKGREEN+"("+entity.getKey()+")"+Colors.ENDC+"\n")
+			#s += (" * "+Colors.OKBLUE+Spec.padString("<%s>", 15)+Colors.ENDC+Colors.OKCYAN+" %s"+Colors.ENDC+Colors.OKGREEN+" (%s)"+Colors.ENDC+"\n") % (entity.getSpecString().upper(), entity.getName(), entity.getKey())
 		return s
 
 	# Private

@@ -1,11 +1,14 @@
 import datetime
 from ...place import Place
 from ...spec import Spec
-from .territory import Territory
-from .country import Country
+from .province import Province
+from .city import City
+from .village import Village
+from .structure import Structure
+from .restaurant import Restaurant
 
-class Continent(Place):
-	"""Continents exist on planets and can contain territories...
+class Country(Place):
+	"""Countries exist on continents and can contain provinces, cities, villages, and structures...
 
 	Attributes
 		allowedChildEntities    Entity spec types that can be created from this context
@@ -14,10 +17,10 @@ class Continent(Place):
 	# Things that child class SHOULDNT need to redeclare
 	
 	# Things that a few child classes will need to redeclare
-	allowedChildEntities = [Spec.TERRITORY, Spec.COUNTRY]
+	allowedChildEntities = [Spec.PROVINCE, Spec.CITY, Spec.VILLAGE, Spec.STRUCTURE, Spec.RESTAURANT]
 
 	# Things every child class will want to redeclare
-	spec = Spec.CONTINENT
+	spec = Spec.COUNTRY
 
 	# ---- Methods ---- #
 	def initEntityFromSpec(self, spec, key, path):
@@ -32,12 +35,21 @@ class Continent(Place):
 
 		Return
 		Entity"""
-		if (spec == spec.TERRITORY):
-			territory = Territory(key, path)
-			return territory
-		if (spec == spec.COUNTRY):
-			country = Country(key, path)
-			return country
+		if (spec == spec.PROVINCE):
+			province = Province(key, path)
+			return province
+		if (spec == spec.CITY):
+			city = City(key, path)
+			return city
+		if (spec == spec.VILLAGE):
+			village = Village(key, path)
+			return village
+		if (spec == spec.STRUCTURE):
+			structure = Structure(key, path)
+			return structure
+		if (spec == Spec.RESTAURANT):
+			restaurant = Restaurant(key, path)
+			return restaurant
 
 		raise ContextEntityConflictError("No matching child-entity for '" + self.getSpecString() + " with spec " + spec.name)
 

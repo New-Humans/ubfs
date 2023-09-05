@@ -79,6 +79,9 @@ def printContextStack():
 def update(entity):
 	entity.update()
 
+def delete(entity):
+	entity.delete()
+
 def saveHistory(historyList):
 	with open(historyFile, 'w') as file:
 		file.write(json.dumps(historyList))
@@ -116,7 +119,6 @@ def listCodex():
 		myPrint("Category: "+root.split('\\')[1].upper())
 		for file in files:
 			myPrint(" * " + file.split('.')[0].upper())
-
 
 # Errors for this wrapper...
 class EntityIsNotAContextError(Exception):
@@ -235,8 +237,22 @@ while (args[0] != "exit"):
 			show(frameOfReference)
 
 	# 0:delete 1:key
-	elif (args[0] == "delete"):
-		myPrint("Delete stub!")
+	elif (args[0] in ["delete", "rm"]):
+		if (len(args) > 1):
+			if (len(contextStack) >= 1):
+				try:
+					entity = frameOfReference.find(args[1])
+					delete(entity)
+					show(frameOfReference)
+				except EntityNotFoundError:
+					myPrint("No entity with the key '%s' exists in this frame of reference." % (args[1]))
+			else:
+				myPrint("Cannot delete the multiverse.")
+		else:
+			entityToDelete = frameOfReference
+			frameOfReference = contextStack.pop()
+			delete(entityToDelete)
+			show(frameOfReference)
 
 	# 0:use 1:key
 	elif (args[0] in ["use", "cd"]):

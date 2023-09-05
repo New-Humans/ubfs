@@ -31,6 +31,7 @@ class Spec(Enum):
 	WARD			= 1016
 	MULTIVERSE      = 1017
 	PLANE           = 1018
+	COUNTRY			= 1019
 
 	# Person roles (10001 - 20000) (isPerson = true)
 
@@ -70,7 +71,8 @@ class Spec(Enum):
 			"shoppinglist": Spec.SHOPPINGLIST,
 			"ward": Spec.WARD,
 			"multiverse": Spec.MULTIVERSE,
-			"plane": Spec.PLANE
+			"plane": Spec.PLANE,
+			"country": Spec.COUNTRY
 		}
 
 	@staticmethod
@@ -89,6 +91,26 @@ class Spec(Enum):
 			return list(specString.values()).index(s)
 		raise InvalidSpecStringError("The supplied string '" + s + "' could not be recognized as a spec!")
 
+	@staticmethod
+	def keyToName(input_string):	    
+	    words = input_string.split('_')	    
+	    words = [word.capitalize() for word in words]	    
+	    transformed_string = ' '.join(words)	    
+	    return transformed_string
+
+	@staticmethod
+	def padString(input_string, length):
+	    # Check if the input string is already longer or equal to the desired length
+	    if len(input_string) >= length:
+	        return input_string
+	    else:
+	        # Calculate the number of spaces needed for padding
+	        spaces_needed = length - len(input_string)
+	        
+	        # Pad the string with spaces on the right
+	        padded_string = input_string + ' ' * spaces_needed
+	        
+	        return padded_string
 
 # Spec errors!
 class InvalidSpecStringError(Exception):

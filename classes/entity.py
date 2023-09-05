@@ -1,5 +1,6 @@
 import datetime
 import os
+import shutil
 import yaml
 from .spec import Spec
 
@@ -66,7 +67,7 @@ class Entity:
 		None"""
 		self.setKey(key)
 		self.setPath(path + key)
-
+		self.setName(Spec.keyToName(key))
 
 	# Public methods
 	def create(self):
@@ -97,7 +98,7 @@ class Entity:
 		self.createYAML()
 
 		# Display the update menu to the user
-		self.update()
+		# self.update() # disabled! Its annoying. Let people edit afterwards
 
 	def load(self):
 		"""After construction, take the path and YAMLFileName and attempt to load an existing entity.
@@ -138,7 +139,9 @@ class Entity:
 			raise EntityNotFoundError("Cannot delete " + self.getSpecString() + " with key '" + self.getKey() + "'. Key not found")
 
 		# End it all
-		self.deleteYAML()
+		# self.deleteYAML()
+		# self.deleteChildren()
+		self.deleteOwnFolder()
 
 	def update(self):
 		"""Display and handle interaction for a menu that updates this entity's properties.
@@ -258,13 +261,23 @@ class Entity:
 		fullYAMLPath = self.getPath() + '/' + self.getYAMLFileName()
 		if (not os.path.exists(fullYAMLPath)):
 			raise EntityNotFoundError("Cannot delete YAML for " + self.getSpecString() + " with key '" + self.getKey() + "'. YAML not found")
-
 		os.remove(fullYAMLPath)
 
 	def refreshYAML(self):
 		"""Update the YAML file with what's in the entity memory. Do not redefine"""
 		self.deleteYAML()
 		self.createYAML()
+
+	def deleteChildren(self):
+		fullChildrenPath = self.getPath() + '/' + 'e' # todo remove magic 'e'
+		if (not os.path.exists(fullChildrenPath)):
+			raise EntityHasNoChildDirectory("Cannot delete child entities for " + self.getSpecString() + " with key '" + self.getKey() + "'. 'e' directory not present.")
+		shutil.rmtree(fullChildrenPath)
+
+	def deleteOwnFolder(self):
+		if (not os.path.exists(self.getPath())):
+			raise EntityHasNoDirectory("Cannot delete entity folder for " + self.getSpecString() + " with key '" + self.getKey() + "'. Entity directory not present.")
+		shutil.rmtree(self.getPath())
 
 	def toString(self):
 		"""Represent the entity attributes as a string.
@@ -422,4 +435,10 @@ class EntityAlreadyExistsError(Exception):
 	pass
 	
 class EntityNotFoundError(Exception):
+	pass
+
+class EntityHasNoChildDirectory(Exception):
+	pass
+
+class EntityHasNoDirectory(Exception):
 	pass
