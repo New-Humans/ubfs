@@ -2,6 +2,7 @@ import datetime
 from ...place import Place
 from ...spec import Spec
 from .room import Room
+from ...person import Person
 
 class Structure(Place):
 	"""Structures can exist in many places. A structure is just a building of sorts. Other classes can import this.
@@ -14,7 +15,7 @@ class Structure(Place):
 	# Things that child class SHOULDNT need to redeclare
 	
 	# Things that a few child classes will need to redeclare
-	allowedChildEntities = [Spec.ROOM]
+	allowedChildEntities = [Spec.ROOM, Spec.PERSON]
 
 	# Things every child class will want to redeclare
 	spec = Spec.STRUCTURE
@@ -35,6 +36,9 @@ class Structure(Place):
 		if (spec == spec.ROOM):
 			room = Room(key, path)
 			return room
+		if (spec == spec.PERSON):
+			person = Person(key, path)
+			return person
 
 		raise ContextEntityConflictError("No matching child-entity for '" + self.getSpecString() + " with spec " + spec.name)
 

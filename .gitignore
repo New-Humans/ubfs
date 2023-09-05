@@ -1,5 +1,6 @@
 # Ignore the user generated content in reality
 # Is there a difference between reality and the universe?
 /reality/*
-
 __pycache__/
+/codex/*
+history.json

@@ -158,7 +158,7 @@ class Entity:
 				print("Please select an action")
 				print("  1) Edit name")
 				print("  2) Edit description")
-				print("  3) Save and exit")
+				print("  3) Save and continue navigating")
 				choice = self.askForInteger("Action")
 
 				if (choice != 1 and choice != 2 and choice != 3):
@@ -247,7 +247,7 @@ class Entity:
 			raise EntityAlreadyExistsError("Cannot load YAML for" + self.getSpecString() + " with key '" + self.getKey() + "'. YAML not found")
 
 		stream = open(fullYAMLPath, 'r')
-		entityDictionary = yaml.load(stream)    # Load the serialized YAML into a dictionary using yaml package
+		entityDictionary = yaml.load(stream,  Loader=yaml.CLoader)    # Load the serialized YAML into a dictionary using yaml package
 		stream.close()
 		self.fromYAML(entityDictionary)         # Load the dictionary into memory
 
@@ -276,7 +276,7 @@ class Entity:
 
 		Return
 		string"""
-		s = "The %s '%s':\n\n" % (self.getSpecString(), self.getName())
+		# s = "The %s '%s':\n\n" % (self.getSpecString(), self.getName())
 		s += "%s\n\n" % (self.getDescription())
 		return s
 

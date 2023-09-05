@@ -28,6 +28,9 @@ class Spec(Enum):
 	ROOM            = 1013
 	DWARFPLANET     = 1014
 	RESTAURANT      = 1015
+	WARD			= 1016
+	MULTIVERSE      = 1017
+	PLANE           = 1018
 
 	# Person roles (10001 - 20000) (isPerson = true)
 
@@ -38,65 +41,52 @@ class Spec(Enum):
 	SHOPPINGLIST    = 20004
 
 	@staticmethod
+	def getSpecString():
+		return {
+			"entity": Spec.ENTITY,
+			"context": Spec.CONTEXT,
+			"person": Spec.PERSON,
+			"place": Spec.PLACE,
+			"thing": Spec.THING,
+			"contextualthing": Spec.CONTEXTUALTHING,
+			"universe": Spec.UNIVERSE,
+			"galaxy": Spec.GALAXY,
+			"system": Spec.SYSTEM,
+			"planet": Spec.PLANET,
+			"ocean": Spec.OCEAN,
+			"continent": Spec.CONTINENT,
+			"territory": Spec.TERRITORY,
+			"province": Spec.PROVINCE,
+			"city": Spec.CITY,
+			"village": Spec.VILLAGE,
+			"district": Spec.DISTRICT,
+			"structure": Spec.STRUCTURE,
+			"room": Spec.ROOM,
+			"dwarfplanet": Spec.DWARFPLANET,
+			"restaurant": Spec.RESTAURANT,
+			"bookcase": Spec.BOOKCASE,
+			"book": Spec.BOOK,
+			"page": Spec.PAGE,
+			"shoppinglist": Spec.SHOPPINGLIST,
+			"ward": Spec.WARD,
+			"multiverse": Spec.MULTIVERSE,
+			"plane": Spec.PLANE
+		}
+
+	@staticmethod
 	def getSpecFromString(s):
 		# Key types
-		if (s == "entity"):
-			return Spec.ENTITY
-		if (s == "context"):
-			return Spec.CONTEXT
-		if (s == "person"):
-			return Spec.PERSON
-		if (s == "place"):
-			return Spec.PLACE
-		if (s == "thing"):
-			return Spec.THING
-		if (s == "contextualthing"):
-			return Spec.CONTEXTUALTHING
+		specString = Spec.getSpecString()
+		if s in specString:
+			return specString.get(s)
+		raise InvalidSpecStringError("The supplied string '" + s + "' could not be recognized as a spec!")
 
-		# Places
-		if (s == "universe"):
-			return Spec.UNIVERSE
-		if (s == "galaxy"):
-			return Spec.GALAXY
-		if (s == "system"):
-			return Spec.SYSTEM
-		if (s == "planet"):
-			return Spec.PLANET
-		if (s == "ocean"):
-			return Spec.OCEAN
-		if (s == "continent"):
-			return Spec.CONTINENT
-		if (s == "territory"):
-			return Spec.TERRITORY
-		if (s == "province"):
-			return Spec.PROVINCE
-		if (s == "city"):
-			return Spec.CITY
-		if (s == "village"):
-			return Spec.VILLAGE
-		if (s == "district"):
-			return Spec.DISTRICT
-		if (s == "structure"):
-			return Spec.STRUCTURE
-		if (s == "room"):
-			return Spec.ROOM
-		if (s == "dwarfplanet"):
-			return Spec.DWARFPLANET
-		if (s == "restaurant"):
-			return Spec.RESTAURANT
-
-		# Persons
-
-		# Things / ContextualThings
-		if (s == "bookcase"):
-			return Spec.BOOKCASE
-		if (s == "book"):
-			return Spec.BOOK
-		if (s == "page"):
-			return Spec.PAGE
-		if (s == "shoppinglist"):
-			return Spec.SHOPPINGLIST
-
+	@staticmethod
+	def getStringFromSpec(s):
+		# Value types
+		specString = Spec.getSpecString()
+		if s in specString.values():
+			return list(specString.values()).index(s)
 		raise InvalidSpecStringError("The supplied string '" + s + "' could not be recognized as a spec!")
 
 

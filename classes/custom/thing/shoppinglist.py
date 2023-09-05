@@ -37,7 +37,7 @@ class ShoppingList(Thing):
 				print("  2) Edit description")
 				print("  3) Add item")
 				print("  4) Remove item")
-				print("  5) Save and exit")
+				print("  5) save and continue navigating")
 				choice = self.askForInteger("Action")
 
 				if (choice != 1 and choice != 2 and choice != 3 and choice != 4 and choice != 5):

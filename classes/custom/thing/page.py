@@ -36,7 +36,7 @@ class Page(Thing):
 				print("  1) Edit title")
 				print("  2) Edit summary")
 				print("  3) Edit content")
-				print("  4) Save and exit")
+				print("  4) save and continue navigating")
 				choice = self.askForInteger("Action")
 
 				if (choice != 1 and choice != 2 and choice != 3 and choice != 4):

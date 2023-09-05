@@ -5,6 +5,7 @@ from .entity import Entity
 from .entity import EntityNotFoundError
 from .entity import EntityAlreadyExistsError
 from .spec import Spec
+from .colors import Colors
 
 class Context(Entity):
 	"""Contexts are entities of which other entities can exist within.
@@ -91,11 +92,12 @@ class Context(Entity):
 
 		Return
 		string"""
-		s = "The %s '%s':\n\n" % (self.getSpecString(), self.getName())
-		s += "%s\n\n" % (self.getDescription())
-		s += "Within this %s lies:\n" % (self.getSpecString())
+		s = "%s\n\n" % (self.getDescription())
+		s += "Contains:\n"
+		if (not self.getContextualChildren()):
+			s += " * There is nothing here...."
 		for entity in self.getContextualChildren():
-			s += "  * [%s] The %s '%s'\n" % (entity.getKey(), entity.getSpecString(), entity.getName())
+			s += (" * "+Colors.OKBLUE+"<%s>"+Colors.ENDC+Colors.OKCYAN+" %s"+Colors.ENDC+Colors.OKGREEN+" (%s)"+Colors.ENDC+"\n") % (entity.getSpecString().upper(), entity.getName(), entity.getKey())
 
 		return s
 

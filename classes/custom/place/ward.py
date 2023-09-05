@@ -1,13 +1,11 @@
 import datetime
 from ...place import Place
 from ...spec import Spec
-from .district import District
 from .structure import Structure
 from .restaurant import Restaurant
-from .ward import Ward
 
-class City(Place):
-	"""Cities can exist in territories or provinces, and can contain districts and structures...
+class Ward(Place):
+	"""Wards can exist within cities, and can contain structures...
 
 	Attributes
 		allowedChildEntities    Entity spec types that can be created from this context
@@ -16,10 +14,10 @@ class City(Place):
 	# Things that child class SHOULDNT need to redeclare
 	
 	# Things that a few child classes will need to redeclare
-	allowedChildEntities = [Spec.DISTRICT, Spec.STRUCTURE, Spec.RESTAURANT, Spec.WARD]
+	allowedChildEntities = [Spec.STRUCTURE, Spec.RESTAURANT]
 
 	# Things every child class will want to redeclare
-	spec = Spec.CITY
+	spec = Spec.WARD
 
 	# ---- Methods ---- #
 	def initEntityFromSpec(self, spec, key, path):
@@ -34,18 +32,12 @@ class City(Place):
 
 		Return
 		Entity"""
-		if (spec == spec.DISTRICT):
-			district = District(key, path)
-			return district
 		if (spec == spec.STRUCTURE):
 			structure = Structure(key, path)
 			return structure
 		if (spec == Spec.RESTAURANT):
 			restaurant = Restaurant(key, path)
 			return restaurant
-		if (spec == Spec.WARD):
-			ward = Ward(key, path)
-			return ward
 
 		raise ContextEntityConflictError("No matching child-entity for '" + self.getSpecString() + " with spec " + spec.name)
 
