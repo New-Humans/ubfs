@@ -97,9 +97,19 @@ class Context(Entity):
 		if (not self.getContextualChildren()):
 			s += " * There is nothing here...."
 		# todo, get longest character length for: spec name, name, key, then use those as padding +1
+		maxLengthSpec = -1
+		maxLengthName = -1
+		maxLengthKey = -1
 		for entity in self.getContextualChildren():
-			s += (" * "+Colors.OKBLUE+Spec.padString("<"+entity.getSpecString().upper()+">", 15)+Colors.ENDC)
-			s += (Colors.OKCYAN+Spec.padString(entity.getName(), 20)+Colors.ENDC)
+			if (len(entity.getSpecString()) > maxLengthSpec):
+				maxLengthSpec = len(entity.getSpecString())
+			if (len(entity.getName()) > maxLengthName):
+				maxLengthName = len(entity.getName())
+			if (len(entity.getKey()) > maxLengthKey):
+				maxLengthKey = len(entity.getKey())
+		for entity in self.getContextualChildren():
+			s += (" * "+Colors.OKBLUE+Spec.padString("<"+entity.getSpecString().upper()+">", maxLengthSpec+3)+Colors.ENDC)
+			s += (Colors.OKCYAN+Spec.padString(entity.getName(), maxLengthName+1)+Colors.ENDC)
 			s += (Colors.OKGREEN+"("+entity.getKey()+")"+Colors.ENDC+"\n")
 			#s += (" * "+Colors.OKBLUE+Spec.padString("<%s>", 15)+Colors.ENDC+Colors.OKCYAN+" %s"+Colors.ENDC+Colors.OKGREEN+" (%s)"+Colors.ENDC+"\n") % (entity.getSpecString().upper(), entity.getName(), entity.getKey())
 		return s
