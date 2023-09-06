@@ -1,9 +1,39 @@
-Welcome to UBFS (Universe Builder File System)
+# Universe Builder File System (UBFS)
 
-Requires Python 3. Run enter.py and use 'help' to get started.
+Python 3 command line application. Useful for DnD worldbuilding and similar.
 
-Based on a tree of contexts. Each context is an entity, but not all entities are contexts. The context tree can be traversed using a stack of contexts. Entities can be leaf nodes, but not branch nodes.
+## Install
 
-New entities should be added to the classes/custom/[person|place|thing] directory. See templates for assistance. See entity and context classes for more assistance. All non-custom classes should include docstrings denoting private/public status of members, as well as return type and parameters for methods.
+`pip install pyyaml`
+`pip install dndice`
 
-New entities should assign themselves a "Spec" value, which acts as an enumeration of the entity. All entities and all contexts are enumerated within this class.
+## Features
+
+* Starting from a root "multiverse" entity, create planes of existance, worlds, continents, countries, buildings, people, and items.
+* "Codex" display for collection of text files in `codex` directory
+* DnDice library integrated
+
+Here's the `help` output:
+
+```
+Commands:
+  add    [entity] [key] Add a new entity to the current frame of reference
+  update [?key]         Key optional. Update the entity
+  ls     [?key]         Key optional. Show the entity
+  delete [?key]         Key optional. Delete the entity
+  cd     [key]          Attempt to use the given entity as the current frame of reference
+  codex  [file]         Read a codex entry.
+  roll   [#d#+#]        Roll some dice
+  back                  Move back a context on the stack
+  exit                  Save and quit.
+```
+
+## Contributing - How to add more entities
+
+1. Create a class file in the appropriate directory (person/place/thing)
+2. Copy the contents of another entity into it
+3. Modify the allowed child entities array, and the related method as desired
+4. Edit any existing entities such that the new entity can be created from them
+5. Update the Spec class with a new ID and string
+
+
