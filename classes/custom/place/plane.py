@@ -17,7 +17,7 @@ class Plane(Place):
 	# Things that child class SHOULDNT need to redeclare
 	
 	# Things that a few child classes will need to redeclare
-	allowedChildEntities = [Spec.CONTINENT, Spec.OCEAN, Spec.CITY, Spec.STRUCTURE, Spec.GALAXY]
+	allowedChildEntities = [Spec.PLANE, Spec.CONTINENT, Spec.OCEAN, Spec.CITY, Spec.STRUCTURE, Spec.GALAXY]
 
 	# Things every child class will want to redeclare
 	spec = Spec.PLANE
@@ -50,6 +50,9 @@ class Plane(Place):
 		if (spec == spec.GALAXY):
 			galaxy = Galaxy(key, path)
 			return galaxy
+		if (spec == spec.PLANE):
+			plane = Plane(key, path)
+			return plane
 
 		raise ContextEntityConflictError("No matching child-entity for '" + self.getSpecString() + " with spec " + spec.name)
 

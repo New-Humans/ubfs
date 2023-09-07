@@ -239,20 +239,20 @@ while (args[0] != "exit"):
 	# 0:delete 1:key
 	elif (args[0] in ["delete", "rm"]):
 		if (len(args) > 1):
+			try:
+				entity = frameOfReference.find(args[1])
+				delete(entity)
+				show(frameOfReference)
+			except EntityNotFoundError:
+				myPrint("No entity with the key '%s' exists in this frame of reference." % (args[1]))
+		else:
 			if (len(contextStack) >= 1):
-				try:
-					entity = frameOfReference.find(args[1])
-					delete(entity)
-					show(frameOfReference)
-				except EntityNotFoundError:
-					myPrint("No entity with the key '%s' exists in this frame of reference." % (args[1]))
+				entityToDelete = frameOfReference
+				frameOfReference = contextStack.pop()
+				delete(entityToDelete)
+				show(frameOfReference)
 			else:
 				myPrint("Cannot delete the multiverse.")
-		else:
-			entityToDelete = frameOfReference
-			frameOfReference = contextStack.pop()
-			delete(entityToDelete)
-			show(frameOfReference)
 
 	# 0:use 1:key
 	elif (args[0] in ["use", "cd"]):
