@@ -32,6 +32,7 @@ class Spec(Enum):
 	MULTIVERSE      = 1017
 	PLANE           = 1018
 	COUNTRY			= 1019
+	LAYER           = 1020
 
 	# Person roles (10001 - 20000) (isPerson = true)
 
@@ -72,7 +73,8 @@ class Spec(Enum):
 			"ward": Spec.WARD,
 			"multiverse": Spec.MULTIVERSE,
 			"plane": Spec.PLANE,
-			"country": Spec.COUNTRY
+			"country": Spec.COUNTRY,
+			"leyer": Spec.LAYER
 		}
 
 	@staticmethod
