@@ -1,13 +1,9 @@
 import datetime
 from ...place import Place
 from ...spec import Spec
-from .planet import Planet
-from .dwarfplanet import DwarfPlanet
-from .star import Star
-from .moon import Moon
 
-class System(Place):
-	"""Systems exist within galaxies, and can contain planets...
+class Star(Place):
+	"""Stars exist within systems.
 
 	Attributes
 		allowedChildEntities    Entity spec types that can be created from this context
@@ -16,10 +12,11 @@ class System(Place):
 	# Things that child class SHOULDNT need to redeclare
 	
 	# Things that a few child classes will need to redeclare
-	allowedChildEntities = [Spec.PLANET, Spec.DWARFPLANET, Spec.STAR, Spec.MOON]
+	allowedChildEntities = []
+	isDwarfPlanet = False
 
 	# Things every child class will want to redeclare
-	spec = Spec.SYSTEM
+	spec = Spec.STAR
 
 	# ---- Methods ---- #
 	def initEntityFromSpec(self, spec, key, path):
@@ -34,18 +31,5 @@ class System(Place):
 
 		Return
 		Entity"""
-		if (spec == spec.PLANET):
-			planet = Planet(key, path)
-			return planet
-		if (spec == spec.DWARFPLANET):
-			dwarfPlanet = DwarfPlanet(key, path)
-			return dwarfPlanet
-		if (spec == spec.STAR):
-			star = Star(key, path)
-			return star
-		if (spec == spec.MOON):
-			moon = Moon(key, path)
-			return moon
 
 		raise ContextEntityConflictError("No matching child-entity for '" + self.getSpecString() + " with spec " + spec.name)
-

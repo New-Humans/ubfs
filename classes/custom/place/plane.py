@@ -7,6 +7,7 @@ from .city import City
 from .structure import Structure
 from .galaxy import Galaxy
 from .layer import Layer
+from .system import System
 
 class Plane(Place):
 	"""Planes exist within multiverses, and can contain many things..
@@ -18,7 +19,7 @@ class Plane(Place):
 	# Things that child class SHOULDNT need to redeclare
 	
 	# Things that a few child classes will need to redeclare
-	allowedChildEntities = [Spec.PLANE, Spec.CONTINENT, Spec.OCEAN, Spec.CITY, Spec.STRUCTURE, Spec.GALAXY, Spec.LAYER]
+	allowedChildEntities = [Spec.PLANE, Spec.CONTINENT, Spec.OCEAN, Spec.CITY, Spec.STRUCTURE, Spec.GALAXY, Spec.LAYER, Spec.SYSTEM]
 
 	# Things every child class will want to redeclare
 	spec = Spec.PLANE
@@ -57,6 +58,9 @@ class Plane(Place):
 		if (spec == spec.LAYER):
 			layer = Layer(key, path)
 			return layer
+		if (spec == spec.SYSTEM):
+			system = System(key, path)
+			return system
 
 		raise ContextEntityConflictError("No matching child-entity for '" + self.getSpecString() + " with spec " + spec.name)
 
